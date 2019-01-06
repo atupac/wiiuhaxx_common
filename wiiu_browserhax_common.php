@@ -29,8 +29,11 @@ if($filesysver == 540)$filesysver = 532;
 
 require_once("wiiuhaxx_rop_sysver_$filesysver.php");
 
+if(!isset($ROPCHAIN_JS_VAR)) $ROPCHAIN_JS_VAR = false;
 if(!isset($USE_FIXED_PAYLOAD_LEGNTH)) $USE_FIXED_PAYLOAD_LEGNTH = -1;
+
 if(!isset($payload_size)) $payload_size = 0x20000; //Doesn't really matter if the actual payload data size in memory is smaller than this or not.
+
 if(!isset($ropchainselect))$ropchainselect = -1;
 if($ropchainselect == -1)
 {
@@ -77,6 +80,14 @@ function genu32_unicode($value)//This would need updated to support big-endian.
 	$outstr = "\u" . substr($hexstr, 4, 4) . "\u" . substr($hexstr, 0, 4);
 	return $outstr;
 }
+
+function genu32_array($value)
+{
+	$hexstr = sprintf("%08X", $value);
+	$outstr = "0x" . substr($hexstr, 0, 2). ", 0x" . substr($hexstr, 2, 2). ", 0x" . substr($hexstr, 4, 2). ", 0x" . substr($hexstr, 6, 2). ", ";
+	return $outstr;
+}
+
 function genu32_unicode_jswrap($value)
 {
 	$str = "\"" . genu32_unicode($value) . "\"";
@@ -84,10 +95,14 @@ function genu32_unicode_jswrap($value)
 }
 function ropchain_appendu32($val)
 {
-	global $ROPCHAIN, $generatebinrop;
+	global $ROPCHAIN, $generatebinrop, $ROPCHAIN_JS_VAR;
 	if($generatebinrop==0)
 	{
-		$ROPCHAIN.= genu32_unicode($val);
+		if($ROPCHAIN_JS_VAR){
+			$ROPCHAIN.= genu32_array($val);
+		}else{
+			$ROPCHAIN.= genu32_unicode($val);
+		}
 	}
 	else
 	{
@@ -97,18 +112,20 @@ function ropchain_appendu32($val)
 
 function generate_ropchain()
 {
-	global $ROPCHAIN, $generatebinrop, $ropchainselect;
+	global $ROPCHAIN, $generatebinrop, $ropchainselect, $ROPCHAIN_JS_VAR;
 
 	$ROPCHAIN = "";
 
-	if($generatebinrop==0)$ROPCHAIN .= "\"";
+	if($generatebinrop==0 && !$ROPCHAIN_JS_VAR)$ROPCHAIN .= "\"";
+	if($generatebinrop==0 && $ROPCHAIN_JS_VAR)$ROPCHAIN .= "var realROPChain = [";
 
 	if($ropchainselect==1)
 	{
 		generateropchain_type1();
 	}
 
-	if($generatebinrop==0)$ROPCHAIN.= "\"";
+	if($generatebinrop==0 && !$ROPCHAIN_JS_VAR)$ROPCHAIN.= "\"";
+	if($generatebinrop==0 && $ROPCHAIN_JS_VAR)$ROPCHAIN .= "];";
 }
 
 function wiiuhaxx_generatepayload()
