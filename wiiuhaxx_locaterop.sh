@@ -1,16 +1,18 @@
 ospath=$1
 coreinit_textaddr=$2
+extension=$3
 
-powerpc-eabi-objcopy --change-section-address .text=$coreinit_textaddr $ospath/coreinit.elf $ospath/coreinit_reloc.elf
+reloc=$((0x02000000-$coreinit_textaddr))
 
-function getcoreinit_symboladdr
+
+getcoreinit_symboladdr()
 {
-	val=`powerpc-eabi-readelf -a $ospath/coreinit_reloc.elf | grep "$1" | head -n 1 | cut -d: -f2 | cut "-d " -f2`
-	echo "$2 = 0x$val;"
+	val=`powerpc-eabi-readelf -a "$PWD/$ospath.elf" | grep "$1" | head -n 1 | cut -d: -f2 | cut "-d " -f2`
+	printf "$2 = 0x%X;\n" $((0x$val-$reloc))
 }
 
-echo "<?php"
-ropgadget_patternfinder $1/coreinit.elf --baseaddr=$coreinit_textaddr "--plainsuffix=;" --script=wiiuhaxx_locaterop_script
+echo "<?php" 
+./bin/ropgadget_patternfinder$extension $ospath.elf --baseaddr=$coreinit_textaddr "--plainsuffix=;" --script=wiiuhaxx_locaterop_script #?1EFE3500?
 echo ""
 getcoreinit_symboladdr "memcpy" "\$ROP_memcpy"
 getcoreinit_symboladdr "DCFlushRange" "\$ROP_DCFlushRange"

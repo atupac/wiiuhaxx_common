@@ -1,3 +1,24 @@
+# README
+
+This fork is supposed a common base for Wii U ROP-chains.
+
+# Building
+Before using the ROP-chain, some files need to be compiled/generated, you can do it with `make`.
+
+The makefile expects some binaries/files.
+- `bin/ropgadget_patternfinder(.exe)` [Download](https://github.com/wiiu-env/ropgadget_patternfinder/releases)
+- `bin/rpl2elf(.exe)` [Download](https://github.com/wiiu-env/rpl2elf/releases)
+- `bin/FileDownloader.jar` [Download] (https://github.com/wiiu-env/NUSFileDownloader/releases).
+- `common.key` containing the reatil wii u common key (in binary form, 16 bytes).
+
+When you have all needed files, you can use `make`.
+
+On success, you can now find the following files:
+ - `wiiuhaxx_rop_sysver_*.php` one for each supported firmware.
+ - `wiiuhaxx_loader.bin`
+
+# Original README
+
 This is a common codebase for generating ROP-chains/etc for *seperate* Wii U PowerPC-userland exploits. This uses addresses auto-located from coreinit, with .php for each sysver that was pre-generated. This is basically a Wii U version of this: https://github.com/yellows8/3ds_browserhax_common
 
 Currently only binary ROP-chains are supported, hence no support for using this easily with WebKit exploits. The core1-switch ROP here doesn't work correctly currently, hence this codebase isn't usable as-is unless the current core is already core1(which isn't the case for WebKit exploits it seems). In other words, this codebase is currently only usable with non-WebKit exploits. Hence the use of php, this is intended for running under browser-based titles, but could be used with others as well if the ROP-chain(s) are usable with them.

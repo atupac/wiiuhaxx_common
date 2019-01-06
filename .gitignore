@@ -1,0 +1,7 @@
+common.key
+bin/
+*.zip
+wiiuhaxx_loader.elf
+wiiuhaxx_loader.bin
+tmp/
+wiiuhaxx_rop_sysver_*
