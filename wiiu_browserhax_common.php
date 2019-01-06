@@ -29,6 +29,7 @@ if($filesysver == 540)$filesysver = 532;
 
 require_once("wiiuhaxx_rop_sysver_$filesysver.php");
 
+if(!isset($USE_FIXED_PAYLOAD_LEGNTH)) $USE_FIXED_PAYLOAD_LEGNTH = -1;
 if(!isset($payload_size)) $payload_size = 0x20000; //Doesn't really matter if the actual payload data size in memory is smaller than this or not.
 if(!isset($ropchainselect))$ropchainselect = -1;
 if($ropchainselect == -1)
@@ -112,14 +113,19 @@ function generate_ropchain()
 
 function wiiuhaxx_generatepayload()
 {
-	global $wiiuhaxxcfg_payloadfilepath, $wiiuhaxxcfg_loaderfilepath;
+	global $wiiuhaxxcfg_payloadfilepath, $wiiuhaxxcfg_loaderfilepath, $USE_FIXED_PAYLOAD_LEGNTH;
 
 	$actual_payload = file_get_contents($wiiuhaxxcfg_payloadfilepath);
 	if($actual_payload === FALSE || strlen($actual_payload) < 4)return FALSE;
 
 	$loader = file_get_contents($wiiuhaxxcfg_loaderfilepath);
 	if($loader === FALSE || strlen($loader) < 4)return FALSE;
-	$len = strlen($actual_payload);
+	
+	if($USE_FIXED_PAYLOAD_LEGNTH != -1){
+		$len = USE_FIXED_PAYLOAD_LEGNTH;
+	}else{
+		$len = strlen($actual_payload);
+	}
 
 	while($len & 0x3)//The actual payload size must be 4-byte aligned.
 	{
