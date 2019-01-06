@@ -29,6 +29,7 @@ if($filesysver == 540)$filesysver = 532;
 
 require_once("wiiuhaxx_rop_sysver_$filesysver.php");
 
+if(!isset($payload_size)) $payload_size = 0x20000; //Doesn't really matter if the actual payload data size in memory is smaller than this or not.
 if(!isset($ropchainselect))$ropchainselect = -1;
 if($ropchainselect == -1)
 {
@@ -398,8 +399,9 @@ function ropgen_switchto_core1()
 function generateropchain_type1()
 {
 	global $ROP_OSFatal, $ROP_Exit, $ROP_OSDynLoad_Acquire, $ROP_OSDynLoad_FindExport, $ROP_os_snprintf, $payload_srcaddr, $ROPHEAP, $ROPCHAIN;
+	global $ROP_OSFatal, $ROP_Exit, $ROP_OSDynLoad_Acquire, $ROP_OSDynLoad_FindExport, $ROP_os_snprintf, $payload_srcaddr, $ROPHEAP, $ROPCHAIN, $payload_size;
 
-	$payload_size = 0x20000;//Doesn't really matter if the actual payload data size in memory is smaller than this or not.
+	//$payload_size = 0x20000;
 	$codegen_addr = 0x01800000;
 	//$payload_srcaddr must be defined by the code including this .php.
 
