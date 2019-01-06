@@ -139,7 +139,7 @@ function wiiuhaxx_generatepayload()
 	if($loader === FALSE || strlen($loader) < 4)return FALSE;
 	
 	if($USE_FIXED_PAYLOAD_LEGNTH != -1){
-		$len = USE_FIXED_PAYLOAD_LEGNTH;
+		$len = $USE_FIXED_PAYLOAD_LEGNTH;
 	}else{
 		$len = strlen($actual_payload);
 	}
