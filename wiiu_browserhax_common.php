@@ -142,7 +142,7 @@ function wiiuhaxx_generatepayload()
 		$actual_payload.= pack("C*", 0x00);
 		$len = strlen($actual_payload);
 	}
-
+  
 	$loader .= pack("N*", $len);
 
 	return $loader . $actual_payload;
