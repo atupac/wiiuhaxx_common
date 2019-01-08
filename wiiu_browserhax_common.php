@@ -343,6 +343,9 @@ function ropgen_copycodebin_to_codegen($codegen_addr, $codebin_addr, $codebin_si
 	//ropgen_OSGetCodegenVirtAddrRange($ROPHEAP+0x200, $ROPHEAP+0x10+4);
 	//ropgen_callfunc(0x103769C, 0x0, 0x0, 0x0, 0x0, 0x0);//5.5.0 getcodegeninfo syscall
 	//ropgen_display_u32(0);
+    
+    ropgen_DCFlushRange($codebin_addr, $codebin_size);
+	ropgen_ICInvalidateRange($codebin_addr, $codebin_size);
 
 	ropgen_OSSwitchSecCodeGenMode(0);
 	ropgen_memcpy($codegen_addr, $codebin_addr, $codebin_size);
