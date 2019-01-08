@@ -117,6 +117,10 @@ function generate_ropchain()
     {
         generateropchain_type2();
     }
+     else if ($ropchainselect==3)
+    {
+        generateropchain_type3();
+    }
 
 	if($generatebinrop==0)$ROPCHAIN.= "\"";
 }
@@ -486,6 +490,12 @@ function generateropchain_type2(){
     
     // Go!
     ropchain_appendu32($codegen_addr);
+}
+
+// Print payload_srcaddr.
+function generateropchain_type3(){
+    global $payload_srcaddr;
+    ropgen_OSFatal($payload_srcaddr);
 }
 
 ?>
