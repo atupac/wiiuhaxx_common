@@ -29,7 +29,6 @@ if($filesysver == 540)$filesysver = 532;
 
 require_once("wiiuhaxx_rop_sysver_$filesysver.php");
 
-if(!isset($ROPCHAIN_JS_VAR)) $ROPCHAIN_JS_VAR = false;
 if(!isset($USE_FIXED_PAYLOAD_LEGNTH)) $USE_FIXED_PAYLOAD_LEGNTH = -1;
 
 if(!isset($payload_size)) $payload_size = 0x20000; //Doesn't really matter if the actual payload data size in memory is smaller than this or not.
@@ -95,14 +94,10 @@ function genu32_unicode_jswrap($value)
 }
 function ropchain_appendu32($val)
 {
-	global $ROPCHAIN, $generatebinrop, $ROPCHAIN_JS_VAR;
+	global $ROPCHAIN, $generatebinrop;
 	if($generatebinrop==0)
 	{
-		if($ROPCHAIN_JS_VAR){
-			$ROPCHAIN.= genu32_array($val);
-		}else{
-			$ROPCHAIN.= genu32_unicode($val);
-		}
+		$ROPCHAIN.= genu32_unicode($val);
 	}
 	else
 	{
@@ -112,20 +107,18 @@ function ropchain_appendu32($val)
 
 function generate_ropchain()
 {
-	global $ROPCHAIN, $generatebinrop, $ropchainselect, $ROPCHAIN_JS_VAR;
+	global $ROPCHAIN, $generatebinrop, $ropchainselect;
 
 	$ROPCHAIN = "";
 
-	if($generatebinrop==0 && !$ROPCHAIN_JS_VAR)$ROPCHAIN .= "\"";
-	if($generatebinrop==0 && $ROPCHAIN_JS_VAR)$ROPCHAIN .= "var realROPChain = [";
+	if($generatebinrop==0)$ROPCHAIN .= "\"";
 
 	if($ropchainselect==1)
 	{
 		generateropchain_type1();
 	}
 
-	if($generatebinrop==0 && !$ROPCHAIN_JS_VAR)$ROPCHAIN.= "\"";
-	if($generatebinrop==0 && $ROPCHAIN_JS_VAR)$ROPCHAIN .= "];";
+	if($generatebinrop==0)$ROPCHAIN.= "\"";
 }
 
 function wiiuhaxx_generatepayload()
