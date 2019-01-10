@@ -106,6 +106,7 @@ For example:
 
 $wiiuhaxxcfg_payloadfilepath = "<filepath for actual payload, such as wiiuhax_payload.bin, or for example: {projectdir}/bin/code550.bin>";//Remember that this is just an example, you can programmatically select the payload path by checking the request URL/etc if you want as well.
 $wiiuhaxxcfg_loaderfilepath = "<filepath for wiiuhaxx_loader.bin>";
+$wiiuhaxxcfg_searchpayloadfilepath = "<filepath for wiiuhaxx_searcher.bin>";
 
 ?>
 ```

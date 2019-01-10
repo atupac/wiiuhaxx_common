@@ -5,3 +5,5 @@ wiiuhaxx_loader.elf
 wiiuhaxx_loader.bin
 tmp/
 wiiuhaxx_rop_sysver_*
+wiiuhaxx_searcher.bin
+wiiuhaxx_searcher.elf

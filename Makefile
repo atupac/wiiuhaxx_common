@@ -36,6 +36,9 @@ all: loader locateall
 loader:
 	$(CC) -x assembler-with-cpp -nostartfiles -nostdlib $(DEFINES) -o wiiuhaxx_loader.elf wiiuhaxx_loader.s
 	$(OBJCOPY) -O binary wiiuhaxx_loader.elf wiiuhaxx_loader.bin
+    
+	$(CC) -x assembler-with-cpp -nostartfiles -nostdlib $(DEFINES) -o wiiuhaxx_searcher.elf wiiuhaxx_searcher.s
+	$(OBJCOPY) -O binary wiiuhaxx_searcher.elf wiiuhaxx_searcher.bin
 	
 locateall: locate532 locate550
 	
@@ -52,5 +55,5 @@ locatespecific:
 	sh ./wiiuhaxx_locaterop.sh $(COREINIT_PATH) $(TEXTADDRESS) $(exe_ext) > wiiuhaxx_rop_sysver_$(FIRMWARE).php
 
 clean:
-	rm -rf wiiuhaxx_loader.elf wiiuhaxx_loader.bin wiiuhaxx_rop_sysver_* tmp
+	rm -rf wiiuhaxx_loader.elf wiiuhaxx_loader.bin wiiuhaxx_searcher.elf wiiuhaxx_searcher.bin wiiuhaxx_rop_sysver_* tmp
 
