@@ -2,7 +2,13 @@
 
 require_once("wiiuhaxx_common_cfg.php");
 
-if(!isset($wiiuhaxxcfg_payloadfilepath) || !isset($wiiuhaxxcfg_loaderfilepath))die("The filepaths for wiiuhaxxcfg are not set in the cfg file.");
+if(!isset($ropchainselect))$ropchainselect = -1;
+if($ropchainselect == -1)
+{
+	$ropchainselect = 1;
+}
+
+if(!isset($wiiuhaxxcfg_payloadfilepath) || (($ropchainselect != 4) && !isset($wiiuhaxxcfg_loaderfilepath)))die("The filepaths for wiiuhaxxcfg are not set in the cfg file.");
 
 if(!isset($sysver))$sysver = -1;
 
@@ -29,11 +35,6 @@ if($filesysver == 540)$filesysver = 532;
 
 require_once("wiiuhaxx_rop_sysver_$filesysver.php");
 
-if(!isset($ropchainselect))$ropchainselect = -1;
-if($ropchainselect == -1)
-{
-	$ropchainselect = 1;
-}
 
 if(!isset($generatebinrop))$generatebinrop = 0;
 
@@ -527,8 +528,7 @@ function generateropchain_type4()
     //$valid_payload_dst_address = 0x1D500000;
     if(!isset($valid_payload_dst_address)){
         die('please set $valid_payload_dst_address. This should address a region of 0x20000 bytes where the found payload it copied to.');
-    }
-    
+    }    
     //$payload_search_for
     if(!isset($payload_search_for)){
         die('please set $payload_search_for. This should contain a unqiue u32 value that is placed right before the payload.');
