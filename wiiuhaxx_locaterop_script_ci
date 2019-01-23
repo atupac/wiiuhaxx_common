@@ -7,3 +7,5 @@
 --patterntype=sha256 --patterndata=6f5f11fdc441ddef8f2189cbc9006517c4917fcf6e975cb8cbeb2373bf8e8ca2 --patternsha256size=0x14 --addval=0xFFFFFCFC "--plainout=$ROP_POP_R24_TO_R31 = "
 --patterntype=sha256 --patterndata=e602f66cf8aadc4d5e7db074ad9b8fbfa4190f862a8215cf26f707a49ca95070 --patternsha256size=0x28 --addval=0xFFFFFCFC "--plainout=$ROP_CALLFUNCPTR_WITHARGS_FROM_R3MEM = "
 --patterntype=sha256 --patterndata=5e1fb4810ff6fb86bb533f2050306de6e03e09450887df6cb22c6d8511c3e267 --patternsha256size=0x18 --addval=0xFFFFFCFC "--plainout=$ROP_SETR3TOR31_POP_R31 = "
+--patterntype=sha256 --patterndata=5CED182718E8204C299EA1F8E295841A0325EE493893B86053DE762CC0EEFB48 --patternsha256size=0x0C --addval=0xFFFFFCFC "--plainout=$ROP_Register = "
+--patterntype=sha256 --patterndata=C457C33CF42B00C2E00B96E2C6B097848643BC172E8BDC9F0E7D974E833860B6 --patternsha256size=0x0C --addval=0xFFFFFCFC "--plainout=$ROP_CopyToSaveArea = "
