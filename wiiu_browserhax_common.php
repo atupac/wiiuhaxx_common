@@ -8,7 +8,7 @@ if($ropchainselect == -1)
 	$ropchainselect = 1;
 }
 
-if(!isset($wiiuhaxxcfg_payloadfilepath) || (($ropchainselect != 4) && !isset($wiiuhaxxcfg_loaderfilepath)))die("The filepaths for wiiuhaxxcfg are not set in the cfg file.");
+if(!isset($wiiuhaxxcfg_payloadfilepath) || (($ropchainselect < 4) && !isset($wiiuhaxxcfg_loaderfilepath)))die("The filepaths for wiiuhaxxcfg are not set in the cfg file.");
 
 if(!isset($sysver))$sysver = -1;
 
@@ -508,6 +508,26 @@ function generateropchain_type2(){
 function generateropchain_type3(){
     global $payload_srcaddr;
     ropgen_OSFatal($payload_srcaddr);
+}
+
+function ropgen_GX2DirectCallDisplayList($addr,$size){
+    global $ROP_GX2DirectCallDisplayList;
+	ropgen_callfunc($ROP_GX2DirectCallDisplayList, $addr, $size, 0x0, 0x0, 0x0);
+}
+
+function ropgen_GX2Flush(){
+    global $ROP_GX2Flush;
+	ropgen_callfunc($ROP_GX2Flush, 0x0, 0x0, 0x0, 0x0, 0x0);
+}
+
+function ropgen_Register($namePtr,$nameSize,$arg3,$arg4){
+    global $ROP_Register;
+	ropgen_callfunc($ROP_Register, $namePtr, $nameSize, $arg3, $arg4, 0x0);
+}
+
+function ropgen_CopyToSaveArea($namePtr,$nameSize,$srcAddr,$srcLen){
+    global $ROP_CopyToSaveArea;
+	ropgen_callfunc($ROP_CopyToSaveArea, $namePtr, $nameSize, $srcAddr, $srcLen, 0x0);
 }
 
 function generateropchain_type4()
