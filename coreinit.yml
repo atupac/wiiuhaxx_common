@@ -1,0 +1,74 @@
+!!de.orb.wiiu.rpxgadgetfinder.SymbolList
+symbols:
+- !!de.orb.wiiu.rpxgadgetfinder.ExportSymbol {name: memcpy, out: $ROP_memcpy}
+- !!de.orb.wiiu.rpxgadgetfinder.ExportSymbol {name: DCFlushRange, out: $ROP_DCFlushRange}
+- !!de.orb.wiiu.rpxgadgetfinder.ExportSymbol {name: ICInvalidateRange, out: $ROP_ICInvalidateRange}
+- !!de.orb.wiiu.rpxgadgetfinder.ExportSymbol {name: OSSwitchSecCodeGenMode, out: $ROP_OSSwitchSecCodeGenMode}
+- !!de.orb.wiiu.rpxgadgetfinder.ExportSymbol {name: OSCodegenCopy, out: $ROP_OSCodegenCopy}
+- !!de.orb.wiiu.rpxgadgetfinder.ExportSymbol {name: OSGetCodegenVirtAddrRange, out: $ROP_OSGetCodegenVirtAddrRange}
+- !!de.orb.wiiu.rpxgadgetfinder.ExportSymbol {name: OSGetCoreId, out: $ROP_OSGetCoreId}
+- !!de.orb.wiiu.rpxgadgetfinder.ExportSymbol {name: OSGetCurrentThread, out: $ROP_OSGetCurrentThread}
+- !!de.orb.wiiu.rpxgadgetfinder.ExportSymbol {name: OSSetThreadAffinity, out: $ROP_OSSetThreadAffinity}
+- !!de.orb.wiiu.rpxgadgetfinder.ExportSymbol {name: OSYieldThread, out: $ROP_OSYieldThread}
+- !!de.orb.wiiu.rpxgadgetfinder.ExportSymbol {name: OSFatal, out: $ROP_OSFatal}
+- !!de.orb.wiiu.rpxgadgetfinder.ExportSymbol {name: _Exit, out: $ROP_Exit}
+- !!de.orb.wiiu.rpxgadgetfinder.ExportSymbol {name: OSScreenFlipBuffersEx, out: $ROP_OSScreenFlipBuffersEx}
+- !!de.orb.wiiu.rpxgadgetfinder.ExportSymbol {name: OSScreenClearBufferEx, out: $ROP_OSScreenClearBufferEx}
+- !!de.orb.wiiu.rpxgadgetfinder.ExportSymbol {name: OSDynLoad_Acquire, out: $ROP_OSDynLoad_Acquire}
+- !!de.orb.wiiu.rpxgadgetfinder.ExportSymbol {name: OSDynLoad_FindExport, out: $ROP_OSDynLoad_FindExport}
+- !!de.orb.wiiu.rpxgadgetfinder.ExportSymbol {name: __os_snprintf, out: $ROP_os_snprintf}
+- !!de.orb.wiiu.rpxgadgetfinder.GadgetSymbol
+  hash: !!binary |-
+    yHAg7FCY0T7dPuDQ0BMToKXwp5N/NsD19OlQMWWuM/s=
+  out: $ROP_POPJUMPLR_STACK12
+  size: 16
+- !!de.orb.wiiu.rpxgadgetfinder.GadgetSymbol
+  hash: !!binary |-
+    3s/zyode/BqcPQrHYY8++j0zylm9P9YCp0fTRpvVwAA=
+  out: $ROP_POPJUMPLR_STACK20
+  size: 16
+- !!de.orb.wiiu.rpxgadgetfinder.GadgetSymbol
+  hash: !!binary |-
+    UwYkiCHAcqnPXHHJRpFx4XzSlm9m/H1hLOec/41dEko=
+  out: $ROP_CALLFUNC
+  size: 52
+- !!de.orb.wiiu.rpxgadgetfinder.GadgetSymbol
+  hash: !!binary |-
+    9OdgU6ZcVx8rO4xsbd6XPJX4ibzPCiLrlknLx4EMjpg=
+  out: $ROP_CALLR28_POP_R28_TO_R31
+  size: 44
+- !!de.orb.wiiu.rpxgadgetfinder.GadgetSymbol
+  hash: !!binary |-
+    R0G4Y63PdC+JKMSFo588yGKUadHdzPnmjJ3RwlNB8JE=
+  out: $ROP_POP_R28R29R30R31
+  size: 32
+- !!de.orb.wiiu.rpxgadgetfinder.GadgetSymbol
+  hash: !!binary |-
+    lylzvoB06SsPEPxfu6rvbCjikF+ZAHZUzXNaX9aZM/w=
+  out: $ROP_POP_R27
+  size: 20
+- !!de.orb.wiiu.rpxgadgetfinder.GadgetSymbol
+  hash: !!binary |-
+    b18R/cRB3e+PIYnLyQBlF8SRf89ul1y4y+sjc7+OjKI=
+  out: $ROP_POP_R24_TO_R31
+  size: 20
+- !!de.orb.wiiu.rpxgadgetfinder.GadgetSymbol
+  hash: !!binary |-
+    5gL2bPiq3E1efbB0rZuPv6QZD4YqghXPJvcHpJypUHA=
+  out: $ROP_CALLFUNCPTR_WITHARGS_FROM_R3MEM
+  size: 40
+- !!de.orb.wiiu.rpxgadgetfinder.GadgetSymbol
+  hash: !!binary |-
+    Xh+0gQ/2+4a7Uz8gUDBt5uA+CUUIh99ssixthRHD4mc=
+  out: $ROP_SETR3TOR31_POP_R31
+  size: 24
+- !!de.orb.wiiu.rpxgadgetfinder.GadgetSymbol
+  hash: !!binary |-
+    XO0YJxjoIEwpnqH44pWEGgMl7kk4k7hgU952LMDu+0g=
+  out: $ROP_Register
+  size: 12
+- !!de.orb.wiiu.rpxgadgetfinder.GadgetSymbol
+  hash: !!binary |-
+    xFfDPPQrAMLgC5bixrCXhIZDvBcui9yfDn2XToM4YLY=
+  out: $ROP_CopyToSaveArea
+  size: 12

@@ -1,0 +1,5 @@
+!!de.orb.wiiu.rpxgadgetfinder.SymbolList
+symbols:
+- !!de.orb.wiiu.rpxgadgetfinder.ExportSymbol {name: GX2Init, out: $ROP_GX2Init}
+- !!de.orb.wiiu.rpxgadgetfinder.ExportSymbol {name: GX2Flush, out: $ROP_GX2Flush}
+- !!de.orb.wiiu.rpxgadgetfinder.ExportSymbol {name: GX2DirectCallDisplayList, out: $ROP_GX2DirectCallDisplayList}

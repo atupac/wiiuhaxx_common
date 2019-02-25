@@ -1,15 +1,16 @@
 # README
 
-This fork is supposed a common base for Wii U ROP-chains.
+This fork is supposed to be a common base for Wii U ROP-chains.
 
 ## Building
 Before using the ROP-chain, some files need to be compiled/generated, you can do it with `make`.
 
 The makefile expects some binaries/files.
-- `bin/ropgadget_patternfinder(.exe)` [Download](https://github.com/wiiu-env/ropgadget_patternfinder/releases)
-- `bin/rpl2elf(.exe)` [Download](https://github.com/wiiu-env/rpl2elf/releases)
-- `bin/FileDownloader.jar` [Download](https://github.com/wiiu-env/NUSFileDownloader/releases)
-- `common.key` containing the retail Wii U common key (in binary form, 16 bytes).
+- `bin/rpxgadgetfinder.jar` [Download](https://github.com/wiiu-env/RPXGadgetFinder/releases) (requires Java 11(!))
+- `tmp/532/coreinit.rpl` from 00050010-1000400A OSv10 v11464
+- `tmp/532/gx2.rpl` from 00050010-1000400A OSv10 v11464
+- `tmp/550/coreinit.rpl` from 00050010-1000400A OSv10 v15702
+- `tmp/550/gx2.rpl` from 00050010-1000400A OSv10 v15702
 
 When you have all needed files, you can use `make`.
 
